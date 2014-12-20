@@ -12,7 +12,7 @@ weather.sync
 counter = 1
 EM::defer do
   loop do
-    sleep 10*60
+    sleep 1*60
     counter += 1
     weather.sync
   end
