@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 require 'sinatra'
-#require 'eventmachine'
+require 'eventmachine'
 
 #run Sinatra::Application
 
-get '/hello' do
-  "world"
+counter = 1
+
+EM::defer do
+  loop do
+    sleep 5
+    counter += 1
+  end
 end
 
-#EM::defer do
-#  loop do
-#    sleep 5
-#    next if @@jobs.empty?
-#    job = @@jobs.shift ## ジョブ1つ取り出す
-#    ## job処理する
-#  end
-#end
-
+get '/hello' do
+  "world #{counter}"
+end
