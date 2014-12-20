@@ -3,18 +3,18 @@ require 'sinatra'
 require 'eventmachine'
 require 'slack-notifier'
 require './yolp-weather'
+require 'pp'
 
-#weather = YolWeather.new(appid: "dj0zaiZpPTZpTUZRUzI3MmN4WiZzPWNvbnN1bWVyc2VjcmV0Jng9ZDI")
-#weather.location = {lat: 35.649657, lng: 139.752162}
-#weather.sync
-#exit
+weather = YolWeather.new(appid: "dj0zaiZpPTZpTUZRUzI3MmN4WiZzPWNvbnN1bWVyc2VjcmV0Jng9ZDI")
+weather.location = {lat: 35.649657, lng: 139.752162}
+weather.sync
 
 counter = 1
 EM::defer do
   loop do
     sleep 10*60
     counter += 1
-    #weather.sync
+    weather.sync
   end
 end
 
@@ -24,6 +24,10 @@ end
 
 get '/now' do
   Time.now.to_s
+end
+
+get '/debug/weather' do
+  PP.pp(weather.last_weather, '')
 end
 
 
