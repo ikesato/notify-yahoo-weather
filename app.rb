@@ -22,12 +22,17 @@ get '/hello' do
   "world #{counter}"
 end
 
-get '/now' do
+get '/debug/now' do
   Time.now.to_s
 end
 
 get '/debug/weather' do
+  content_type 'text/plain'
   PP.pp(weather.last_weather, '')
+end
+
+get '/debug/counter' do
+  counter.to_s
 end
 
 
