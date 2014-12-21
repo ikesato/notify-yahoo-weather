@@ -47,6 +47,12 @@ class YolpWeather
     messages
   end
 
+  def set_sended_flags
+    @notifications.each do |n|
+      n[:sended] = true
+    end
+  end
+
 
   private
 
