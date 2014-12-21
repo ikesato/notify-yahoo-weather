@@ -40,6 +40,10 @@ get '/force-sync' do
   "OK"
 end
 
+route :get, :post, '/show-notifications' do
+  content_type 'text/plain'
+  PP.pp(weather.notification_messages, '')
+end
 
 
 # For debug
@@ -55,11 +59,6 @@ end
 get '/debug/notifications' do
   content_type 'text/plain'
   PP.pp(weather.notifications, '')
-end
-
-get '/debug/notification_messages' do
-  content_type 'text/plain'
-  PP.pp(weather.notification_messages, '')
 end
 
 get '/debug/counter' do
