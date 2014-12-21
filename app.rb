@@ -2,6 +2,7 @@
 require 'sinatra'
 require 'eventmachine'
 require 'slack-notifier'
+require 'open-uri'
 require './yolp-weather'
 require 'pp'
 
@@ -12,18 +13,25 @@ weather.sync
 notifier = Slack::Notifier.new "https://hooks.slack.com/services/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"
 notifier.ping "Bot started"
 
+p ["Bot started"]
+p ["local port is #{ENV["PORT"]}"]
+
 counter = 1
 EM::defer do
   loop do
+    # sync weather and notify messages
     sleep 10*60
     counter += 1
     weather.sync
     notifier.ping notification_messages
+
+    # polling self to prevent sleep
+    open("http://localhost:#{ENV["PORT"]}/")
   end
 end
 
-get '/hello' do
-  "world #{counter}"
+get '/heartbeat' do
+  "OK"
 end
 
 get '/debug/now' do
