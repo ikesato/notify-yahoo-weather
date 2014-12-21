@@ -24,7 +24,7 @@ EM::defer do
     sleep 10*60
     counter += 1
     weather.sync
-    notifier.ping weather.notification_messages
+    notifier.ping weather.notification_messages.join("\n")
     notifier.set_sended_flag
 
     # polling self to prevent sleep
@@ -42,8 +42,9 @@ get '/force-sync' do
 end
 
 route :get, :post, '/show-notifications' do
-  content_type 'text/plain'
-  PP.pp(weather.notification_messages, '')
+  content_type 'application/json; charset=utf-8'
+  p request.body.read
+  {text: weather.notification_messages.join("\n")}.to_json
 end
 
 
