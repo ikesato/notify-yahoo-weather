@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'sinatra'
+require 'sinatra/multi_route'
 require 'eventmachine'
 require 'slack-notifier'
 require 'open-uri'
