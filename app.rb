@@ -24,6 +24,7 @@ EM::defer do
     counter += 1
     weather.sync
     notifier.ping notification_messages
+    #notifier.set_sended_flag
 
     # polling self to prevent sleep
     open("http://localhost:#{ENV["PORT"]}/")
@@ -34,6 +35,14 @@ get '/heartbeat' do
   "OK"
 end
 
+get '/force-sync' do
+  weather.sync
+  "OK"
+end
+
+
+
+# For debug
 get '/debug/now' do
   Time.now.to_s
 end
