@@ -1,0 +1,93 @@
+{
+  "ResultInfo": {
+    "Count": 1,
+    "Total": 1,
+    "Start": 1,
+    "Status": 200,
+    "Latency": 0.008805,
+    "Description": "",
+    "Copyright": "(C) Yahoo Japan Corporation."
+  },
+  "Feature": [
+    {
+      "Id": "201412091930_140.456_41.7026",
+      "Name": "地点(140.456,41.7026)の2014年12月09日 19時30分から60分間の天気情報",
+      "Geometry": {
+        "Type": "point",
+        "Coordinates": "140.456,41.7026"
+      },
+      "Property": {
+        "WeatherAreaCode": 2300,
+        "WeatherList": {
+          "Weather": [
+            {
+              "Type": "observation",
+              "Date": "201412091930",
+              "Rainfall": 7.25
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412091935",
+              "Rainfall": 3.88
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412091940",
+              "Rainfall": 3.88
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412091945",
+              "Rainfall": 1.55
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412091950",
+              "Rainfall": 1.65
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412091955",
+              "Rainfall": 1.45
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412092000",
+              "Rainfall": 0.0
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412092005",
+              "Rainfall": 0.45
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412092010",
+              "Rainfall": 0.0
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412092015",
+              "Rainfall": 0.0
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412092020",
+              "Rainfall": 1.05
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412092025",
+              "Rainfall": 0.75
+            },
+            {
+              "Type": "forecast",
+              "Date": "201412092030",
+              "Rainfall": 1.55
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

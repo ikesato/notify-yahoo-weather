@@ -5,7 +5,7 @@ require 'slack-notifier'
 require './yolp-weather'
 require 'pp'
 
-weather = YolWeather.new(appid: "dj0zaiZpPTZpTUZRUzI3MmN4WiZzPWNvbnN1bWVyc2VjcmV0Jng9ZDI")
+weather = YolpWeather.new(appid: "dj0zaiZpPTZpTUZRUzI3MmN4WiZzPWNvbnN1bWVyc2VjcmV0Jng9ZDI")
 weather.location = {lat: 35.649657, lng: 139.752162}
 weather.sync
 
@@ -38,6 +38,11 @@ end
 get '/debug/notifications' do
   content_type 'text/plain'
   PP.pp(weather.notifications, '')
+end
+
+get '/debug/notification_messages' do
+  content_type 'text/plain'
+  PP.pp(weather.notification_messages, '')
 end
 
 get '/debug/counter' do

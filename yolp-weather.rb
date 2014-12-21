@@ -5,13 +5,14 @@ require 'active_support/time'
 require 'pp'
 
 
-class YolWeather
+class YolpWeather
   attr_accessor :location
   attr_accessor :appid
   attr_reader :weather, :notifications
 
   def initialize(appid: nil, location: nil)
     @appid = appid
+    @location = location
     @notifications = []
   end
 
@@ -68,10 +69,10 @@ class YolWeather
     futures = @weather["Feature"].first["Property"]["WeatherList"]["Weather"]
     futures.each do |f|
       next if f["Type"] != "forecast"
-      status = {time: Time.zone.parse(f["Date"]), fine: f["Rainfall"].to_f == 0.0}
-      edges << status if edges.last.nil? || edges.last[:fine] != status[:fine]
+      e = {time: Time.zone.parse(f["Date"]), fine: f["Rainfall"].to_f == 0.0}
+      next if e[:time] < Time.zone.now
+      edges << e if edges.last.nil? || edges.last[:fine] != e[:fine]
     end
-    pp ["aaaaaaaaa 0", futures]
 
     # Resolve status and duration and key
     edges.each_with_index do |e, i|
@@ -83,17 +84,19 @@ class YolWeather
       end
       e[:key] = e[:time].to_i.to_s + ":" + e[:status].to_s + ":" + e[:duration].to_s
     end
-    pp ["aaaaaaaaa 1", edges]
 
     # Merge notifications
     ln = @notifications.last
     if ln && edges.first[:status] != ln[:status]
+      # TODO:UT
       edges.shift
     end
     edges.each do |e|
       next if @notifications.any? do |n|
+        # TODO:UT true
         n[:key] == e[:key]
       end
+      # TODO:UT
       @notifications << e
     end
     pp ["aaaaaaaaa 2", edges]
@@ -102,6 +105,7 @@ class YolWeather
     # Sort
     @notifications.sort do |a,b|
       if a[:time] == b[:time]
+        # TODO:UT
         status_to_i(a[:status]) <=> status_to_i(b[:status]) 
       else
         a[:time] <=> b[:time]
@@ -113,6 +117,7 @@ class YolWeather
     ln = nil
     @notifications.delete_if do |n|
       if ln && ln[:time] == n[:time]
+        # TODO:UT
         true
       else
         ln = n
@@ -126,7 +131,6 @@ class YolWeather
     @notifications.delete_if do |n|
       n[:time] < Time.zone.now
     end
-    pp ["aaaaaaaaa 5", @notifications]
 
     # 最後の一つは必ず残す
     @notifications << ln if @notifications.empty?
