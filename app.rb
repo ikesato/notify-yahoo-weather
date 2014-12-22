@@ -28,7 +28,7 @@ EM::defer do
     weather.set_sended_flags
 
     # polling self to prevent sleep
-    open("http://localhost:#{ENV["PORT"]}/heartbeat")
+    open("https://sinatra-demo-20141027.herokuapp.com/heartbeat")
   end
 end
 
