@@ -25,7 +25,7 @@ EM::defer do
     counter += 1
     weather.sync
     notifier.ping weather.notification_messages.join("\n")
-    notifier.set_sended_flag
+    weather.set_sended_flags
 
     # polling self to prevent sleep
     open("http://localhost:#{ENV["PORT"]}/")
