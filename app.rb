@@ -28,7 +28,7 @@ EM::defer do
     weather.set_sended_flags
 
     # polling self to prevent sleep
-    open("http://localhost:#{ENV["PORT"]}/")
+    open("http://localhost:#{ENV["PORT"]}/heartbeat")
   end
 end
 
