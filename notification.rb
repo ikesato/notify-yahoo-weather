@@ -19,6 +19,14 @@ class Notification
     self.time.to_i.to_s + ":" + self.type.to_s + ":" + self.duration.to_s
   end
 
+  def == (other)
+    self.type == other.type &&
+    self.time == other.time &&
+    self.fine == other.fine &&
+    self.duration == other.duration &&
+    self.sended == other.sended
+  end
+
   def <=> (other)
     if self.time == other.time
       self.type_to_i <=> other.type_to_i

@@ -36,7 +36,21 @@ describe Notification do
     end
   end
 
-  describe "sort" do
+  describe "==" do
+    it "should return true when same objects" do
+      n1 = Notification.new(time: Time.at(1001))
+      n2 = Notification.new(time: Time.at(1001))
+      expect(n1 == n2).to eq true
+    end
+
+    it "should return false when differenct objects" do
+      n1 = Notification.new(time: Time.at(1001))
+      n2 = Notification.new(time: Time.at(1002))
+      expect(n1 == n2).to eq false
+    end
+  end
+
+  describe "<=>" do
     it "should order correctly" do
       n0 = Notification.new(time: Time.at(1001), type: :rain)
       n1 = Notification.new(time: Time.at(1002), type: :fine)
