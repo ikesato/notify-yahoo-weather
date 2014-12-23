@@ -21,6 +21,8 @@ notifier.ping "Bot started"
 p "Bot started"
 
 counter = 1
+last_synced_at = nil
+
 EM::defer do
   loop do
     # sync weather and notify messages
