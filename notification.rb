@@ -32,11 +32,10 @@ class Notification
   end
 
   def <=> (other)
-    if self.time == other.time
-      self.type_to_i <=> other.type_to_i
-    else
-      self.time <=> other.time
+    if self.time != other.time
+      return self.time <=> other.time
     end
+    self.type_to_i <=> other.type_to_i
   end
 
   def type_to_i
@@ -50,5 +49,10 @@ class Notification
     when :rain_once
       4
     end
+  end
+
+  def as_json
+    {type: self.type, time: self.time, fine: self.fine,
+      duration: self.duration, sended: self.sended}
   end
 end

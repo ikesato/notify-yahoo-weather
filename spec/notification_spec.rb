@@ -60,8 +60,8 @@ describe Notification do
   end
 
 
-  describe "<=>" do
-    it "should order correctly" do
+  describe "<=> and sort" do
+    it "should sort correctly" do
       n0 = Notification.new(time: Time.at(1001), type: :rain)
       n1 = Notification.new(time: Time.at(1002), type: :fine)
       n2 = Notification.new(time: Time.at(1002), type: :rain)
