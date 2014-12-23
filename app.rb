@@ -46,6 +46,7 @@ get '/force-sync' do
 end
 
 post '/out-going' do
+  content_type 'application/json; charset=utf-8'
   p request.body.read
   {text: "OK"}.to_json
 end
