@@ -20,11 +20,15 @@ class Notification
   end
 
   def == (other)
+    self.eql_without_sended?(other) &&
+    self.sended == other.sended
+  end
+
+  def eql_without_sended?(other)
     self.type == other.type &&
     self.time == other.time &&
     self.fine == other.fine &&
-    self.duration == other.duration &&
-    self.sended == other.sended
+    self.duration == other.duration
   end
 
   def <=> (other)

@@ -50,6 +50,16 @@ describe Notification do
     end
   end
 
+  describe "#eql_without_sended?" do
+    it "should return false when differenct objects" do
+      n1 = Notification.new(time: Time.at(1001), sended: true)
+      n2 = Notification.new(time: Time.at(1001), sended: false)
+      expect(n1.eql_without_sended?(n2)).to eq true
+      expect(n1 == n2).to eq false
+    end
+  end
+
+
   describe "<=>" do
     it "should order correctly" do
       n0 = Notification.new(time: Time.at(1001), type: :rain)
