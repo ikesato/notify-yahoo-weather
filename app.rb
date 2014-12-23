@@ -55,7 +55,7 @@ post '/out-going' do
     response = cw ? (cw.fine? ? "晴れ" : "雨") : "不明"
   elsif text =~ /^今の通知は？/
     response = weather.notification_message(ignore_sended: true)
-  elsif text =~ /^デバッグ/
+  elsif text =~ /^debug|デバッグ/
     json = {now: Time.now.to_s, counter: counter, weather: weather.weather, notifications: weather.notifications}
     response = PP.pp(json, '')
   end
