@@ -30,6 +30,8 @@ EM::defer do
     msg = weather.notification_message
     notifier.ping msg if msg && !msg.empty?
     weather.set_sended_flags
+    Time.zone = "Asia/Tokyo"
+    last_synced_at = Time.zone.now
 
     # polling self to prevent sleep
     open("https://sinatra-demo-20141027.herokuapp.com/heartbeat")
@@ -56,7 +58,7 @@ post '/out-going' do
   elsif text =~ /^今の通知は？/
     response = weather.notification_message(ignore_sended: true)
   elsif text =~ /^debug|デバッグ/
-    json = {now: Time.now.to_s, counter: counter, weather: weather.weather, notifications: weather.notifications}
+    json = {now: Time.now.to_s, last_synced_at: last_synced_at, counter: counter, weather: weather.weather, notifications: weather.notifications}
     response = PP.pp(json, '')
   end
   {text: response}.to_json
