@@ -30,14 +30,11 @@ class YolpWeather
       STDERR.puts(url)
       @weather = JSON.parse(open(url).read)
 
-      last_tz = Time.zone
       Time.zone = "Asia/Tokyo"
       make_notifications
     rescue => ex
       STDERR.puts(ex)
       STDERR.puts(ex.backtrace)
-    ensure
-      Time.zone = last_tz if last_tz
     end
   end
 
@@ -54,6 +51,17 @@ class YolpWeather
     @notifications.each do |n|
       n.sended = true
     end
+  end
+
+  def current_wheather
+    Time.zone = "Asia/Tokyo"
+    now = Time.zone.now
+    last = @notifications.first
+    @notifications.each do |n|
+      break if n.time > now
+      last = n
+    end
+    last
   end
 
 

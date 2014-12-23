@@ -19,6 +19,14 @@ class Notification
     self.time.to_i.to_s + ":" + self.type.to_s + ":" + self.duration.to_s
   end
 
+  def fine?
+    self.type == :fine ||  self.type == :fine_once
+  end
+
+  def rain?
+    self.type == :rain ||  self.type == :rain_once
+  end
+
   def == (other)
     self.eql_without_sended?(other) &&
     self.sended == other.sended

@@ -52,6 +52,17 @@ route :get, :post, '/show-notifications' do
   {text: weather.notification_message}.to_json
 end
 
+route :get, :post, '/current-weather' do
+  content_type 'application/json; charset=utf-8'
+  cw = weather.current_wheather
+  if cw
+    text = cw.fine? ? "晴れ" : "雨"
+  else
+    text = "不明"
+  end
+  {text: text}.to_json
+end
+
 
 # For debug
 get '/debug/now' do
