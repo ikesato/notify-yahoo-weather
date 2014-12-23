@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
+#p File.dirname(__FILE__)
+$LOAD_PATH << File.dirname(__FILE__)
+
 require 'sinatra'
 require 'sinatra/multi_route'
 require 'eventmachine'
 require 'slack-notifier'
 require 'open-uri'
-require './yolp-weather'
+require 'yolp-weather'
 require 'pp'
 
 weather = YolpWeather.new(appid: "dj0zaiZpPTZpTUZRUzI3MmN4WiZzPWNvbnN1bWVyc2VjcmV0Jng9ZDI")
 weather.location = {lat: 35.649657, lng: 139.752162}
 weather.sync
+weather.set_sended_flags # set sended flags at firsttime
 
 notifier = Slack::Notifier.new "https://hooks.slack.com/services/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"
 notifier.ping "Bot started"
@@ -24,7 +28,8 @@ EM::defer do
     sleep 10*60
     counter += 1
     weather.sync
-    notifier.ping weather.notification_messages.join("\n")
+    msg = weather.notification_message
+    notifier.ping msg if msg && !msg.empty?
     weather.set_sended_flags
 
     # polling self to prevent sleep
@@ -44,7 +49,7 @@ end
 route :get, :post, '/show-notifications' do
   content_type 'application/json; charset=utf-8'
   p request.body.read
-  {text: weather.notification_messages.join("\n")}.to_json
+  {text: weather.notification_message}.to_json
 end
 
 

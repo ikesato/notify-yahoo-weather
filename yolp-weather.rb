@@ -2,6 +2,9 @@
 require 'open-uri'
 require 'json'
 require 'active_support/time'
+require 'notification'
+require 'notifications'
+require 'notifications_generator'
 require 'pp'
 
 
@@ -13,7 +16,7 @@ class YolpWeather
   def initialize(appid: nil, location: nil)
     @appid = appid
     @location = location
-    @notifications = []
+    @notifications = Notifications.new
   end
 
   def sync
@@ -38,18 +41,18 @@ class YolpWeather
     end
   end
 
-  def notification_messages
+  def notification_message
     messages = []
     @notifications.each do |n|
-      next if n[:sended]
+      next if n.sended
       messages << make_notification_message(n)
     end
-    messages
+    messages.join("\n")
   end
 
   def set_sended_flags
     @notifications.each do |n|
-      n[:sended] = true
+      n.sended = true
     end
   end
 
@@ -59,10 +62,10 @@ class YolpWeather
   # 通知すべきリストを作成する
   #
   # 一つの通知は以下のいずれか
-  # 1. fine      : ?時?分に晴れます
-  # 2. rain      : ?時?分に雨が降ります
-  # 3. fine-once : ?時?分からN分間だけ晴れます
-  # 4. rain-once : ?時?分からN分間だけ雨が降ります
+  # 1. ?時?分に晴れます
+  # 2. ?時?分に雨が降ります
+  # 3. ?時?分からN分間だけ晴れます
+  # 4. ?時?分からN分間だけ雨が降ります
   #
   # 60分後までの通知を配列でまとめる
   #
@@ -70,102 +73,26 @@ class YolpWeather
   # 地点は見ない
   # FeatureWeatherList だけ参照
   def make_notifications
-    # Detect weather edges
-    edges = []
-    futures = @weather["Feature"].first["Property"]["WeatherList"]["Weather"]
-    futures.each do |f|
-      next if f["Type"] != "forecast"
-      e = {time: Time.zone.parse(f["Date"]), fine: f["Rainfall"].to_f == 0.0}
-      next if e[:time] < Time.zone.now
-      edges << e if edges.last.nil? || edges.last[:fine] != e[:fine]
+    list = []
+    ws = @weather["Feature"].first["Property"]["WeatherList"]["Weather"]
+    ws.map do |w|
+      next if w["Type"] != "forecast"
+      list << {time: Time.zone.parse(w["Date"]), fine: w["Rainfall"].to_f == 0.0}
     end
-
-    # Resolve status and duration and key
-    edges.each_with_index do |e, i|
-      if i == 0 || i == edges.length-1
-        e[:status] = e[:fine] ? :fine : :rain
-      else
-        e[:status] = e[:fine] ? :fine_once : :rain_once
-        e[:duration] = edges[i+1][:time] - e[:time]
-      end
-      e[:key] = e[:time].to_i.to_s + ":" + e[:status].to_s + ":" + e[:duration].to_s
-    end
-
-    # Merge notifications
-    ln = @notifications.last
-    if ln && edges.first[:status] != ln[:status]
-      # TODO:UT
-      edges.shift
-    end
-    edges.each do |e|
-      next if @notifications.any? do |n|
-        # TODO:UT true
-        n[:key] == e[:key]
-      end
-      # TODO:UT
-      @notifications << e
-    end
-    pp ["aaaaaaaaa 2", edges]
-    pp ["aaaaaaaaa 2.2", @notifications]
-
-    # Sort
-    @notifications.sort do |a,b|
-      if a[:time] == b[:time]
-        # TODO:UT
-        status_to_i(a[:status]) <=> status_to_i(b[:status]) 
-      else
-        a[:time] <=> b[:time]
-      end
-    end
-    pp ["aaaaaaaaa 3", @notifications]
-
-    # Uniq
-    ln = nil
-    @notifications.delete_if do |n|
-      if ln && ln[:time] == n[:time]
-        # TODO:UT
-        true
-      else
-        ln = n
-        false
-      end
-    end
-    pp ["aaaaaaaaa 4", @notifications]
-
-    # Remove old notifications
-    ln = @notifications.last
-    @notifications.delete_if do |n|
-      n[:time] < Time.zone.now
-    end
-
-    # 最後の一つは必ず残す
-    @notifications << ln if @notifications.empty?
-    pp ["aaaaaaaaa 6", @notifications]
-  end
-
-  def status_to_i(status)
-    case status
-    when :fine
-      2
-    when :rain
-      1
-    when :fine_once
-      4
-    when :rain_once
-      3
-    end
+    current_ns = NotificationsGenerator.create_notifications(list)
+    @notifications.merge(current_ns)
   end
 
   def make_notification_message(n)
-    case n[:status]
+    case n.type
     when :fine
-      n[:time].strftime("%H時%M分に晴れます。")
+      n.time.strftime("%H時%M分に晴れます。")
     when :rain
-      n[:time].strftime("%H時%M分に雨が降ります。")
+      n.time.strftime("%H時%M分に雨が降ります。")
     when :fine_once
-      "#{n[:time].strftime("%H時%M分")}から#{n[:duration]/60}分間だけ晴れます。"
+      "#{n.time.strftime("%H時%M分")}から#{n.duration/60}分間だけ晴れます。"
     when :rain_once
-      "#{n[:time].strftime("%H時%M分")}から#{n[:duration]/60}分間だけ雨が降ります。"
+      "#{n.time.strftime("%H時%M分")}から#{n.duration/60}分間だけ雨が降ります。"
     end
   end
 end
