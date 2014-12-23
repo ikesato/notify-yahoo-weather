@@ -38,10 +38,10 @@ class YolpWeather
     end
   end
 
-  def notification_message
+  def notification_message(ignore_sended: false)
     messages = []
     @notifications.each do |n|
-      next if n.sended
+      next if ignore_sended == false && n.sended
       messages << make_notification_message(n)
     end
     messages.join("\n")

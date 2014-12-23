@@ -48,7 +48,7 @@ end
 route :get, :post, '/show-notifications' do
   content_type 'application/json; charset=utf-8'
   p request.body.read
-  {text: weather.notification_message}.to_json
+  {text: weather.notification_message(ignore_sended: true)}.to_json
 end
 
 route :get, :post, '/current-weather' do
