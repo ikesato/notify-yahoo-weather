@@ -45,7 +45,7 @@ get '/force-sync' do
   "OK"
 end
 
-get '/out-going' do
+post '/out-going' do
   p request.body.read
   {text: "OK"}.to_json
 end
