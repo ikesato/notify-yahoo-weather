@@ -48,24 +48,18 @@ end
 post '/out-going' do
   content_type 'application/json; charset=utf-8'
   p request.body.read
-  {text: "OK"}.to_json
-end
-
-route :get, :post, '/show-notifications' do
-  content_type 'application/json; charset=utf-8'
-  p request.body.read
-  {text: weather.notification_message(ignore_sended: true)}.to_json
-end
-
-route :get, :post, '/current-weather' do
-  content_type 'application/json; charset=utf-8'
-  cw = weather.current_wheather
-  if cw
-    text = cw.fine? ? "晴れ" : "雨"
-  else
-    text = "不明"
+  p params[:text]
+  text = params[:text]
+  if text =~ /^今の天気/
+    cw = weather.current_wheather
+    response = cw ? (cw.fine? ? "晴れ" : "雨") : "不明"
+  elsif text =~ /^今の通知は？/
+    response = weather.notification_message(ignore_sended: true)
+  elsif text =~ /^デバッグ/
+    json = {now: Time.now.to_s, counter: counter, weather: weather.weather, notifications: weather.notifications}
+    response = PP.pp(json, '')
   end
-  {text: text}.to_json
+  {text: response}.to_json
 end
 
 
