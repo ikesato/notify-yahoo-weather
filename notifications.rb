@@ -18,6 +18,17 @@ class Notifications < Array
       end
     end
 
+    if ns && !ns.empty?
+      # Remove future notifications if not contain new notifications
+      self.delete_if do |n|
+        if ns.first.time <= n.time
+          !ns.include_without_sended? n
+        else
+          false
+        end
+      end
+    end
+
     # Save last element
     ln = self.last
 

@@ -62,7 +62,6 @@ describe Notifications do
       expect([ns1[3].time, ns1[3].sended]).to eq [Time.zone.parse("2014-12-23 20:15"), false]
     end
 
-
     it "should remove past element without last element" do
       ns = Notifications.new
       ns << Notification.new(time: Time.zone.parse("2014-12-23 19:00"), type: :fine, sended: true)
@@ -70,6 +69,25 @@ describe Notifications do
       ns.merge(nil)
       expect(ns.length).to eq 1
       expect(ns[0].time).to eq Time.zone.parse("2014-12-23 19:05")
+    end
+
+    it "should remove when notifications was changed" do
+      ns1 = Notifications.new
+      ns1 << Notification.new(time: Time.zone.parse("2014-12-23 20:00"), type: :fine, sended: true)
+      ns1 << Notification.new(time: Time.zone.parse("2014-12-23 20:05"), type: :rain, sended: true)
+      ns1 << Notification.new(time: Time.zone.parse("2014-12-23 20:10"), type: :fine, sended: true)
+
+      ns2 = Notifications.new
+      ns2 << Notification.new(time: Time.zone.parse("2014-12-23 20:05"), type: :fine, sended: false)
+      ns2 << Notification.new(time: Time.zone.parse("2014-12-23 20:10"), type: :rain, sended: false)
+      ns2 << Notification.new(time: Time.zone.parse("2014-12-23 20:15"), type: :fine, sended: false)
+
+      ns1.merge(ns2)
+      expect(ns1.length).to eq 4
+      expect([ns1[0].time, ns1[0].type, ns1[0].sended]).to eq [Time.zone.parse("2014-12-23 20:00"), :fine, true]
+      expect([ns1[1].time, ns1[1].type, ns1[1].sended]).to eq [Time.zone.parse("2014-12-23 20:05"), :fine, false]
+      expect([ns1[2].time, ns1[2].type, ns1[2].sended]).to eq [Time.zone.parse("2014-12-23 20:10"), :rain, false]
+      expect([ns1[3].time, ns1[3].type, ns1[3].sended]).to eq [Time.zone.parse("2014-12-23 20:15"), :fine, false]
     end
   end
 
