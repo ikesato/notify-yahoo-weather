@@ -10,18 +10,21 @@ require 'open-uri'
 require 'yolp-weather'
 require 'pp'
 
+counter = 1
+last_synced_at = nil
+
 weather = YolpWeather.new(appid: "dj0zaiZpPTZpTUZRUzI3MmN4WiZzPWNvbnN1bWVyc2VjcmV0Jng9ZDI")
 weather.location = {lat: 35.649657, lng: 139.752162}
 weather.sync
 weather.set_sended_flags # set sended flags at firsttime
 
+Time.zone = "Asia/Tokyo"
+last_synced_at = Time.zone.now
+
 notifier = Slack::Notifier.new "https://hooks.slack.com/services/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"
 notifier.ping "Bot started"
 
 p "Bot started"
-
-counter = 1
-last_synced_at = nil
 
 EM::defer do
   loop do
