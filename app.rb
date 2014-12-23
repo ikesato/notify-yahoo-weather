@@ -18,8 +18,7 @@ weather.set_sended_flags # set sended flags at firsttime
 notifier = Slack::Notifier.new "https://hooks.slack.com/services/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"
 notifier.ping "Bot started"
 
-p ["Bot started"]
-p ["local port is #{ENV["PORT"]}"]
+p "Bot started"
 
 counter = 1
 EM::defer do
